@@ -54,7 +54,11 @@ const Dashboard = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 <tr>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">ORD-00{totalOrders}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{orders[totalOrders - 1].customer}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {orders && orders.length > 0
+                        ? orders[totalOrders - 1]?.customer || 'Unknown Customer'
+                        : 'John Doe'}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$200</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
