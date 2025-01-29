@@ -30,8 +30,8 @@ const OrderItemsTable: React.FC<OrderItemsTableProps> = ({ items }) => {
             <tr key={index} className="hover:bg-gray-50">
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.item}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.quantity}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.unitPrice.toFixed(2)}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.total.toFixed(2)}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.unitPrice}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.total}</td>
             </tr>
           ))}
         </tbody>
@@ -39,7 +39,7 @@ const OrderItemsTable: React.FC<OrderItemsTableProps> = ({ items }) => {
           <tr>
             <td colSpan={3} className="px-6 py-4 text-right text-sm font-medium text-gray-900">Total:</td>
             <td className="px-6 py-4 text-left text-sm font-medium text-gray-900">
-              ${total.toFixed(2)}
+              ${total}
             </td>
           </tr>
         </tfoot>

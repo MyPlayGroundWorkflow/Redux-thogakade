@@ -2,15 +2,16 @@ import {useState} from 'react';
 import CartTable from '../components/CartTable';
 import CartItem from "../models/CartItem.ts";
 import {useDispatch, useSelector} from "react-redux";
-import {saveOrder} from "../reducers/OrderReducer.ts";
 import OrderDetail from "../models/OrderDetail.ts";
+import {appDispatch} from "../store/Store.ts";
+import {addOrder} from "../reducers/OrderReducer.ts";
 
 const Orders = () => {
 
   const customers = useSelector((state) => state.customers);
   const items = useSelector((state) => state.items);
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<appDispatch>();
 
   const [selectedCustomer, setSelectedCustomer] = useState('');
   const [selectedItem, setSelectedItem] = useState('');
@@ -45,13 +46,14 @@ const Orders = () => {
 
     const orderDetails: OrderDetail[] = cartItems.map(item => ({
       orderId: '',
-      item: item.name,
+      item: item.id,
       quantity: item.quantity,
       unitPrice: item.unitPrice,
       total: item.total
     }));
 
-    dispatch(saveOrder({
+    dispatch(addOrder({
+      id: 0,
       customer: selectedCustomer,
       date: new Date().toISOString().split('T')[0],
       status: 'Success',

@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import OrderInfoCard from '../components/OrderInfoCard';
 import OrderItemsTable from '../components/OrderItemsTable';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Order from "../models/Order.ts";
+import {appDispatch} from "../store/Store.ts";
+import {getOrders} from "../reducers/OrderReducer.ts";
 
 
 const OrderDetails = () => {
@@ -11,7 +13,15 @@ const OrderDetails = () => {
 
   const [selectedOrderId, setSelectedOrderId] = useState('');
 
+  const dispatch = useDispatch<appDispatch>();
+
+  useEffect(() => {
+    dispatch(getOrders())
+  }, [dispatch]);
+
   function selectOrderById(orderId) {
+    console.log(orders)
+    console.log(orderId)
     return orders.find((o) => o.id == orderId) || null;
   }
 

@@ -10,3 +10,5 @@ export const store = configureStore({
         orders : OrderReducer
     }
 })
+
+export type appDispatch = typeof store.dispatch

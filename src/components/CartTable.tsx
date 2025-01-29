@@ -34,7 +34,7 @@ const CartTable: React.FC<CartTableProps> = ({ items, onRemove }) => {
             <tr key={item.id} className="hover:bg-gray-50">
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.name}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.quantity}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.unitPrice.toFixed(2)}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.unitPrice}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.total.toFixed(2)}</td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button

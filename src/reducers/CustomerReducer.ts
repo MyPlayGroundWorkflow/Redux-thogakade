@@ -1,68 +1,119 @@
 import Customer from "../models/Customer.ts";
-import { createSlice } from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import axios from "axios";
+
 
 export const initialState: Customer[] = [];
+
+const api = axios.create({
+        baseURL: 'http://localhost:3000',
+    }
+)
+
+export const addCustomer = createAsyncThunk(
+    "customer/addCustomer",
+    async (customer: Customer) => {
+        try {
+            const response = await api.post("/customer/add", customer);
+            return response.data;
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
+export const getCustomers = createAsyncThunk(
+    "customer/getCustomer",
+    async () => {
+        try {
+            const response = await api.get("/customer/");
+            return response.data;
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
+export const updateCustomer = createAsyncThunk(
+    "customer/updateCustomer",
+    async (customer: Customer) => {
+        try {
+            const response = await api.put("/customer/update/"+customer.id, customer);
+            return response.data;
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
+export const deleteCustomer = createAsyncThunk(
+    "customer/deleteCustomer",
+    async (id) => {
+        try {
+            const response = await api.delete("/customer/delete/"+id);
+            return response.data;
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
 
 const customerSlice = createSlice({
     name: "customer",
     initialState: initialState,
-    reducers: {
-        saveCustomer: (state, action) => {
-            const { name, email, telephone } = action.payload;
-            if (!name || !email || !telephone) {
-                alert("Please fill in all the fields.");
-                return;
-            }
-            const emailExists = state.some((customer) => customer.email === email);
-            if (emailExists) {
-                alert("This email is already in use. Please use a different email.");
-                return;
-            }
-
-            const id = generateCustomerId(state);
-            const newCustomer = {id, name, email, telephone};
-            state.push(newCustomer);
-        },
-        updateCustomer: (state, action) => {
-            if (confirm("Are you sure you want to update this customer?")) {
-                const { name, email, telephone } = action.payload;
-                if (!name || !email || !telephone) {
-                    alert("Please fill in all the fields.");
-                    return;
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(addCustomer.fulfilled, (state, action) => {
+                state.push(action.payload);
+            })
+            .addCase(addCustomer.rejected, (state, action) => {
+                console.log("customer save rejected");
+            })
+            .addCase(addCustomer.pending, (state, action) => {
+                console.log("customer save pending");
+            })
+        builder
+            .addCase(getCustomers.fulfilled, (state, action) => {
+                state.splice(0, state.length);
+                state.push(...action.payload);
+            })
+            .addCase(getCustomers.rejected, (state, action) => {
+                console.log("customer get rejected");
+            })
+            .addCase(getCustomers.pending, (state, action) => {
+                console.log("customer get pending");
+            })
+        builder
+            .addCase(updateCustomer.fulfilled, (state, action) => {
+                console.log("customer update fulfilled");
+                const updatedCustomer = action.payload; // Ensure the server response contains the updated customer object
+                const index = state.findIndex((customer) => customer.id === updatedCustomer.id);
+                if (index !== -1) {
+                    state[index] = { ...state[index], ...updatedCustomer }; // Replace with updated customer data
                 }
-                const customer = state.find((customer) => customer.email === email);
-                if (!customer) {
-                    alert("Customer not found.");
-                    return;
-                }
-
-                customer.name = name;
-                customer.email = email;
-                customer.telephone = telephone;
-
-                alert("Customer updated successfully!");
-            }
-        },
-        deleteCustomer: (state, action) => {
-            if (confirm("Are you sure you want to delete this customer?")) {
-                const updatedState = state.filter((customer) => customer.email !== action.payload);
-
-                if (updatedState.length === state.length) {
-                    alert("Customer not found.");
-                    return;
-                }
-
-                alert("Customer deleted successfully!");
-                return updatedState;
-            }
-        }
-    },
+            })
+            .addCase(updateCustomer.rejected, (state, action) => {
+                console.log("customer update rejected");
+            })
+            .addCase(updateCustomer.pending, (state, action) => {
+                console.log("customer update pending");
+            })
+        builder
+            .addCase(deleteCustomer.fulfilled, (state, action) => {
+                const deletedCustomerId = action.payload.id; // Ensure the server response includes the deleted customer's ID
+                return state.filter((customer) => customer.id !== deletedCustomerId);
+            })
+            .addCase(deleteCustomer.rejected, (state, action) => {
+                console.log("customer delete rejected");
+            })
+            .addCase(deleteCustomer.pending, (state, action) => {
+                console.log("customer delete pending");
+            })
+    }
 });
 
 
-export const {saveCustomer, updateCustomer, deleteCustomer} = customerSlice.actions;
+export const {} = customerSlice.actions;
 export default customerSlice.reducer;
-
-export const generateCustomerId = (state: Customer[]): number => {
-    return state.length > 0 ? state[state.length - 1].id + 1 : 1;
-};
